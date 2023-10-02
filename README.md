@@ -69,5 +69,6 @@ Para aprender a usar FastAPI usa el siguiente [link](https://github.com/JLaurenc
 <h1 align="center"> PASO 4 DEPLOY DE LA API</h1>
 
 Para el deploy de la API necesitamos los documentos que se encuentran en [DATA](https://github.com/JLaurencioAJimenez/Proyecto_Final/tree/main/FastApi/data), tambien necesitaremos a [main.py](https://github.com/JLaurencioAJimenez/Proyecto_Final/blob/main/FastApi/main.py) y a [requirements](https://github.com/JLaurencioAJimenez/Proyecto_Final/blob/main/FastApi/requirements.txt)
+
 Y de esta forma se ve el [deploy](https://proyecto-individual-nz5f.onrender.com/docs)
 ![image](https://github.com/JLaurencioAJimenez/Proyecto_Final/assets/135534222/4a19182e-4b35-4101-ad6e-e9e22f15e42e)
