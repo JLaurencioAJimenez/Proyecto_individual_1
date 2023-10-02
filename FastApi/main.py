@@ -1,6 +1,11 @@
+from fastapi import FastAPI,  HTTPException
+from fastapi import Query
+from typing import Dict
 import pandas as pd
-from fastapi import FastAPI 
-from pydantic import BaseModel
+import os
+from typing import List
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import StandardScaler
 
 # Cambiar las rutas de archivo a la carpeta de datos
 reviews = pd.read_csv("data/Merge_reviews_items.csv")
@@ -8,10 +13,11 @@ sentiment = pd.read_csv("data/sentiment.csv")
 UserNot = pd.read_csv("data/UserNot.csv")
 PlayTimeGenero=pd.read_parquet("data/PlayTimeGenre.parquet")
 UserForGenero=pd.read_csv("data/UserForGenero.csv")
+features=pd.read_csv("data/Archivo_SCoseno.csv")
 
 app = FastAPI()
 
-@app.get("/playtime_genre/{genero}")
+@app.get("/PlayTime Genre/{genero}")
 async def playtime_genre(genero: str):
     try:
         filtered_df = PlayTimeGenero[PlayTimeGenero['genres'].str.contains(genero, case=False, na=False)]
@@ -33,7 +39,7 @@ async def playtime_genre(genero: str):
     
     
  # UserForGenre
-@app.post("/user_for_genre/")
+@app.post("/User For Genre/")
 async def user_for_genre(genero: str):
     # Filtrar el DataFrame por el género deseado
     df_genero_filtrado = UserForGenero[UserForGenero['genres'].str.contains(genero, case=False)]
@@ -60,7 +66,7 @@ async def user_for_genre(genero: str):
 
 
 # UserReccomend
-@app.get("/users_recommend/{year}")
+@app.get("/Recomendacion Usuario/{year}")
 async def users_recommend(year: int):
     # Filtrar el DataFrame por el año y las condiciones de recomendación y sentimiento
     filtro = (reviews['posted'] == year) & (reviews['recommend'] == True) & (reviews['sentiment_analysis'] >= 0)
@@ -84,7 +90,7 @@ async def users_recommend(year: int):
     return resultado
 
 # UserNotRecommended
-@app.get("/users_not_recommend/{year}")
+@app.get("/No Recomendacion Usuario/{year}")
 async def users_not_recommend(year: int):
     # Obtiene los años únicos disponibles en la columna 'posted'
     años_disponibles = UserNot['posted'].unique()
@@ -108,7 +114,7 @@ async def users_not_recommend(year: int):
     return result
 
 # sentimentAnalysis
-@app.get("/sentiment-analysis/{year}")
+@app.get("/Analizis de sentimiento/{year}")
 async def analyze_sentiment(year: int):
     # Verificar si el año está presente en el DataFrame
     if year not in sentiment['posted'].astype(int).unique():
@@ -131,3 +137,28 @@ async def analyze_sentiment(year: int):
     }
     
     return respuesta
+
+@app.get("/Recomendacion basado en item_id/{item_id}", response_model=List[str])
+def obtener_recomendaciones(item_id: int, num_recomendaciones: int = 5):
+    try:
+        result = recomendacion_juego(item_id, num_recomendaciones)
+        return result
+    except HTTPException as e:
+        raise e
+#Funcion
+def recomendacion_juego(item_id: int, num_recomendaciones: int = 5):
+    #Filtro el juego por su item_id
+    juego_seleccionado = features[features['item_id'] == item_id]
+    #verifico el juego existe en item_id
+    if juego_seleccionado.empty:
+        raise HTTPException(status_code=404, detail="El item_id no se encuentra en los datos")
+    #calculo la similitud del coseno
+    cosine_sim = cosine_similarity(juego_seleccionado.iloc[:, :-2], features.iloc[:, :-2])
+    sim_scores = list(enumerate(cosine_sim[0]))
+    # Ordenando los juegos por similitud en orden descendente
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    #Selecciono los juegos mas similares
+    top_similar_games = sim_scores[1:(num_recomendaciones + 1)]
+    #obtengo los nombres de los juegos recomendados
+    recomendaciones = [features.iloc[i[0]]['item_name'] for i in top_similar_games]
+    return recomendaciones
