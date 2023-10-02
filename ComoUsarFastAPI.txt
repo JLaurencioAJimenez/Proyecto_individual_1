@@ -1,0 +1,12 @@
+1. Creo una carpeta 'FastAPI'
+2. Abro vscode y cargue la carpeta creada
+3. Abro la terminal (a lado de Run ...)
+4. Creo un entorno virtual py -m venv env
+5. Ejecuto .\env\Scripts\activate
+6. Instalo librerias fastapi, uvicorn, pandas, requests
+7. Creo una archivo main.py dentro de env
+8. Copio mi codigo con funciones
+9. En la terminal ejecuto uvicorn main:app --reload
+10. Escribo Localhost:8000/docs
+
+Puedo acceder a la API sin problemas locamente
