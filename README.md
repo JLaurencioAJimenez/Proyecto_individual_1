@@ -8,7 +8,7 @@ Puedes encontrar los dataset originales de tipo JSON en este link: [DATASETS](ht
 
 Puedes encontrar los dataset de tipo CSV o PARQUET creados por mi en este link: [DATASETS](https://drive.google.com/drive/u/1/folders/1i0DYV_MLcuU88pQIa2jLOsVPcLYCG6Om)
 
-Puede encontrar el video aqui: [VIDEO]()
+Puede encontrar el video aqui: [VIDEO](https://drive.google.com/drive/u/1/folders/1qC5XfTT7slo_V2LQuNdYYCT2aHpR0K7u)
 
 ## PASOS REALIZADOS
 
